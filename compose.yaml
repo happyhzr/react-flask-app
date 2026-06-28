@@ -1,7 +1,22 @@
 services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "81:80"
+    depends_on:
+      - backend
+    restart: always
   backend:
     build: ./backend
     ports:
       - "8000:5000"
-    environment:
-      FLASK_ENV: development
+    restart: always
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+

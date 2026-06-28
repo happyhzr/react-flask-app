@@ -2,7 +2,6 @@ import fcntl
 import os
 from flask import jsonify, request
 
-from backend.models import Contact
 from config import app, db
 from models import Contact
 
