@@ -1,6 +1,8 @@
 import fcntl
 import os
 from flask import jsonify, request
+
+from backend.models import Contact
 from config import app, db
 from models import Contact
 
@@ -41,3 +43,26 @@ def create_contact():
     except Exception as e:
         return jsonify({'message': str(e)}), 400
     return jsonify({'message': 'Contact created successfully.'}), 201
+
+
+@app.put('/contacts/<int:contact_id>')
+def update_contact(contact_id):
+    contact = Contact.query.get(contact_id)
+    if not contact:
+        return jsonify({'message': 'Contact not found.'}), 404
+    data = request.json
+    contact.first_name = data.get['firstName', contact.first_name]
+    contact.last_name = data.get['lastName', contact.last_name]
+    contact.email = data.get['email', contact.email]
+    db.session.commit()
+    return jsonify({'message': 'Contact updated successfully.'}), 200
+
+
+@app.delete('/contacts/<int:contact_id>')
+def delete_contact(contact_id):
+    contact = Contact.query.get(contact_id)
+    if not contact:
+        return jsonify({'message': 'Contact not found.'}), 404
+    db.session.delete(contact)
+    db.session.commit()
+    return jsonify({'message': 'Contact deleted successfully.'}), 200
