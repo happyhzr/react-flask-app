@@ -1,16 +1,17 @@
 services:
   frontend:
     build: ./frontend
-    ports:
-      - "81:80"
     depends_on:
       - backend
     restart: always
   backend:
     build: ./backend
-    ports:
-      - "8000:5000"
     restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      POSTGRES_PASSWORD: "P9vL7qX2nFm8Rw4Tc1Zy6HbKs"
   nginx:
     build: ./nginx
     ports:
@@ -19,4 +20,28 @@ services:
       - frontend
       - backend
     restart: always
+  db:
+    image: postgres:18.4
+    restart: always
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    environment:
+      POSTGRES_PASSWORD: "P9vL7qX2nFm8Rw4Tc1Zy6HbKs"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+    volumes:
+      - react_flask_app_postgres_data:/var/lib/postgresql
 
+volumes:
+  react_flask_app_postgres_data:

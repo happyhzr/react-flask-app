@@ -8,7 +8,8 @@ app = Flask(__name__)
 os.makedirs(app.instance_path, exist_ok=True)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
+postgres_password=os.environ.get('POSTGRES_PASSWORD')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg://postgres:{postgres_password}@db:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
