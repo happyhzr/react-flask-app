@@ -34,7 +34,7 @@ services:
     environment:
       POSTGRES_PASSWORD: "P9vL7qX2nFm8Rw4Tc1Zy6HbKs"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
       interval: 5s
       timeout: 5s
       retries: 10
