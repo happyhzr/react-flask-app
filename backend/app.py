@@ -50,9 +50,9 @@ def update_contact(contact_id):
     if not contact:
         return jsonify({'message': 'Contact not found.'}), 404
     data = request.json
-    contact.first_name = data.get['firstName', contact.first_name]
-    contact.last_name = data.get['lastName', contact.last_name]
-    contact.email = data.get['email', contact.email]
+    contact.first_name = data.get('firstName', contact.first_name)
+    contact.last_name = data.get('lastName', contact.last_name)
+    contact.email = data.get('email', contact.email)
     db.session.commit()
     return jsonify({'message': 'Contact updated successfully.'}), 200
 

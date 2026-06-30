@@ -8,8 +8,7 @@ services:
     build: ./backend
     restart: always
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     environment:
       POSTGRES_PASSWORD: "P9vL7qX2nFm8Rw4Tc1Zy6HbKs"
   nginx:
@@ -33,11 +32,6 @@ services:
     #      size: 134217728 # 128*2^20 bytes = 128Mb
     environment:
       POSTGRES_PASSWORD: "P9vL7qX2nFm8Rw4Tc1Zy6HbKs"
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
-      interval: 5s
-      timeout: 5s
-      retries: 10
     ports:
       - "5432:5432"
     volumes:

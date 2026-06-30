@@ -1,9 +1,17 @@
 import {type FormEvent, useState} from "react";
+import {type ContactType} from "./ContactList.tsx";
 
-function ContactForm() {
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [email, setEmail] = useState("")
+interface ContactFormProps {
+    existingContact: ContactType | null,
+    updateCallback: () => Promise<void>,
+}
+
+function ContactForm({existingContact, updateCallback}: ContactFormProps) {
+    const [firstName, setFirstName] = useState(existingContact?.firstName || "")
+    const [lastName, setLastName] = useState(existingContact?.lastName || "")
+    const [email, setEmail] = useState(existingContact?.email || "")
+
+    const updating = existingContact !== null
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
@@ -12,17 +20,20 @@ function ContactForm() {
             lastName,
             email,
         }
-        const response = await fetch("/api/contacts", {
-            method: "POST",
+        const url = updating ? `/api/contacts/${existingContact?.id}` : "/api/contacts"
+        const options = {
+            method: updating ? "PUT" : "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(contact)
-        })
+        }
+        const response = await fetch(url, options)
         if (response.ok) {
             const data = await response.json()
             console.log(data)
+            await updateCallback()
         } else {
             const data = await response.json()
-            console.log(data.message)
+            console.log(data)
         }
     }
 
@@ -40,7 +51,7 @@ function ContactForm() {
                 <label htmlFor="emaile">Email:</label>
                 <input type="text" id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit">{updating ? "Update" : "Create"}</button>
         </form>
     )
 }

@@ -1,15 +1,17 @@
 interface ContactListProps {
-    contacts: ContactProps[],
+    contacts: ContactType[],
+    updateContact: (contact: ContactType) => void,
+    // updateCallback: () => Promise<void>,
 }
 
-interface ContactProps {
-    id: number,
-    firstName: string,
-    lastName: string,
-    email: string,
+export interface ContactType {
+    id?: number,
+    firstName?: string,
+    lastName?: string,
+    email?: string,
 }
 
-function ContactList({contacts}: ContactListProps) {
+function ContactList({contacts, updateContact/*, updateCallback*/}: ContactListProps) {
     return (
         <div>
             <h2>Contacts</h2>
@@ -31,7 +33,9 @@ function ContactList({contacts}: ContactListProps) {
                                 <td>{contact.lastName}</td>
                                 <td>{contact.email}</td>
                                 <td>
-                                    <button>Update</button>
+                                    <button onClick={() => updateContact(contact)}>
+                                        Update
+                                    </button>
                                     <button>Delete</button>
                                 </td>
                             </tr>
