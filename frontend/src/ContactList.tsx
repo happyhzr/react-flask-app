@@ -1,17 +1,32 @@
 interface ContactListProps {
     contacts: ContactType[],
     updateContact: (contact: ContactType) => void,
-    // updateCallback: () => Promise<void>,
+    updateCallback: () => Promise<void>,
 }
 
 export interface ContactType {
-    id?: number,
+    id: number,
     firstName?: string,
     lastName?: string,
     email?: string,
 }
 
-function ContactList({contacts, updateContact/*, updateCallback*/}: ContactListProps) {
+function ContactList({contacts, updateContact, updateCallback}: ContactListProps) {
+    async function onDelete(id: number) {
+        try {
+            const response = await fetch(`/api/contacts/${id}`, {
+                method: "DELETE",
+            })
+            if (response.ok) {
+                await updateCallback()
+            } else {
+                console.error("Error occurred while deleting contact")
+            }
+        } catch (error) {
+            console.error("Error occurred while deleting contact", error)
+        }
+    }
+
     return (
         <div>
             <h2>Contacts</h2>
@@ -36,7 +51,9 @@ function ContactList({contacts, updateContact/*, updateCallback*/}: ContactListP
                                     <button onClick={() => updateContact(contact)}>
                                         Update
                                     </button>
-                                    <button>Delete</button>
+                                    <button onClick={() => onDelete(contact.id)}>
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         )
